@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Records Management</title>
+    <!-- Tailwind CSS via CDN -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+     <link rel="stylesheet" href="src/output.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f3f4f6',
+                        accent: '#60a5fa',
+                        light: '#f9fafb',
+                        dark: '#1f2937'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sort-icon::after {
+            content: '↕';
+            margin-left: 0.25rem;
+            font-size: 0.75rem;
+        }
+        .sort-asc::after {
+            content: '↑';
+        }
+        .sort-desc::after {
+            content: '↓';
+        }
+        .table-container {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        th {
+            position: relative;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-primary mb-6 text-center text-blue-600">Student Records Management</h1>
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div class="relative w-full md:w-64">
+                <input 
+                    id="searchInput" 
+                    type="text" 
+                    placeholder="Search records..." 
+                    class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-2 top-2.5 h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            
+            <div class="relative w-full md:w-auto">
+                <select 
+                    id="sortDropdown" 
+                    class="appearance-none w-full md:w-48 bg-white border border-gray-300 rounded-md py-2 pl-4 pr-8 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="name">Sort by: Name</option>
+                    <option value="enrollmentNumber">Sort by: Enrollment Number</option>
+                    <option value="blockNumber">Sort by: Block Number</option>
+                    <option value="roomNumber">Sort by: Room Number</option>
+                </select>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute right-2 top-2.5 h-4 w-4 text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+        </div>
+        
+        <div class="table-container rounded-lg border border-gray-200 shadow-sm">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider sort-icon" data-field="name">
+                            Name
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider sort-icon" data-field="enrollmentNumber">
+                            Enrollment No.
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider sort-icon" data-field="blockNumber">
+                            Block
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider sort-icon" data-field="roomNumber">
+                            Room
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Contact
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Parents
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Email
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                            Room Partner
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody" class="bg-white divide-y divide-gray-200">
+                    <!-- Table rows will be inserted here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="noRecords" class="hidden text-center py-8 text-gray-500">
+            No student records found.
+        </div>
+    </div>
+
+    <script>
+        // Sample student data
+        const students = [
+            {
+                id: 1,
+                name: "John Smith",
+                enrollmentNumber: "EN2023001",
+                blockNumber: "A",
+                roomNumber: "101",
+                contactNumber: "9876543210",
+                parentsName: "Robert Smith",
+                parentContact: "9876543211",
+                email: "john.smith@example.com",
+                roomPartnerName: "Michael Johnson",
+            },
+            {
+                id: 2,
+                name: "Emily Davis",
+                enrollmentNumber: "EN2023002",
+                blockNumber: "B",
+                roomNumber: "205",
+                contactNumber: "9876543212",
+                parentsName: "Sarah Davis",
+                parentContact: "9876543213",
+                email: "emily.davis@example.com",
+                roomPartnerName: "Sophia Wilson",
+            },
+            {
+                id: 3,
+                name: "David Wilson",
+                enrollmentNumber: "EN2023003",
+                blockNumber: "A",
+                roomNumber: "110",
+                contactNumber: "9876543214",
+                parentsName: "James Wilson",
+                parentContact: "9876543215",
+                email: "david.wilson@example.com",
+                roomPartnerName: "Daniel Brown",
+            },
+            {
+                id: 4,
+                name: "Olivia Brown",
+                enrollmentNumber: "EN2023004",
+                blockNumber: "C",
+                roomNumber: "302",
+                contactNumber: "9876543216",
+                parentsName: "William Brown",
+                parentContact: "9876543217",
+                email: "olivia.brown@example.com",
+                roomPartnerName: "Emma Taylor",
+            },
+            {
+                id: 5,
+                name: "Aiden Taylor",
+                enrollmentNumber: "EN2023005",
+                blockNumber: "B",
+                roomNumber: "210",
+                contactNumber: "9876543218",
+                parentsName: "Thomas Taylor",
+                parentContact: "9876543219",
+                email: "aiden.taylor@example.com",
+                roomPartnerName: "Noah Anderson",
+            },
+        ];
+
+        // DOM elements
+        const tableBody = document.getElementById('studentTableBody');
+        const searchInput = document.getElementById('searchInput');
+        const sortDropdown = document.getElementById('sortDropdown');
+        const noRecordsMessage = document.getElementById('noRecords');
+        const sortableHeaders = document.querySelectorAll('th[data-field]');
+
+        // Current sort state
+        let sortState = {
+            field: 'name',
+            direction: 'asc'
+        };
+
+        // Initialize the table
+        renderStudents();
+
+        // Add event listeners
+        searchInput.addEventListener('input', renderStudents);
+        sortDropdown.addEventListener('change', handleSortDropdownChange);
+        
+        // Add click event listeners to sortable headers
+        sortableHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                handleHeaderClick(header.dataset.field);
+            });
+        });
+
+        // Handle sort dropdown change
+        function handleSortDropdownChange() {
+            sortState.field = sortDropdown.value;
+            sortState.direction = 'asc';
+            updateSortIcons();
+            renderStudents();
+        }
+
+        // Handle header click for sorting
+        function handleHeaderClick(field) {
+            if (sortState.field === field) {
+                // Toggle direction if clicking the same field
+                sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Set new field and default to ascending
+                sortState.field = field;
+                sortState.direction = 'asc';
+            }
+            
+            // Update dropdown to match
+            sortDropdown.value = field;
+            
+            // Update sort icons
+            updateSortIcons();
+            
+            // Re-render the table
+            renderStudents();
+        }
+
+        // Update sort icons on headers
+        function updateSortIcons() {
+            sortableHeaders.forEach(header => {
+                // Remove all sort classes
+                header.classList.remove('sort-asc', 'sort-desc');
+                
+                // Add appropriate class if this is the sorted field
+                if (header.dataset.field === sortState.field) {
+                    header.classList.add(sortState.direction === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
+        }
+
+        // Render students based on current search and sort
+        function renderStudents() {
+            // Get search term
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            // Filter students based on search term
+            let filteredStudents = students.filter(student => 
+                Object.values(student).some(value => 
+                    typeof value === 'string' && 
+                    value.toLowerCase().includes(searchTerm)
+                )
+            );
+            
+            // Sort students
+            filteredStudents.sort((a, b) => {
+                const aValue = a[sortState.field];
+                const bValue = b[sortState.field];
+                
+                if (aValue < bValue) return sortState.direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortState.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            // Show/hide no records message
+            if (filteredStudents.length === 0) {
+                tableBody.innerHTML = '';
+                noRecordsMessage.classList.remove('hidden');
+                return;
+            } else {
+                noRecordsMessage.classList.add('hidden');
+            }
+            
+            // Generate table rows
+            tableBody.innerHTML = filteredStudents.map((student, index) => `
+                <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        ${student.name}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${student.enrollmentNumber}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getBlockColor(student.blockNumber)}">
+                            Block ${student.blockNumber}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${student.roomNumber}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${student.contactNumber}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <div>${student.parentsName}</div>
+                        <div class="text-xs text-gray-500">${student.parentContact}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${student.email}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        ${student.roomPartnerName}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Get color for block badge based on block number
+        function getBlockColor(blockNumber) {
+            switch(blockNumber) {
+                case 'A':
+                    return 'bg-blue-100 text-blue-800';
+                case 'B':
+                    return 'bg-green-100 text-green-800';
+                case 'C':
+                    return 'bg-purple-100 text-purple-800';
+                default:
+                    return 'bg-gray-100 text-gray-800';
+            }
+        }
+
+        // Initialize sort icons
+        updateSortIcons();
+    </script>
+</body>
+</html>

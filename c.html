@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management</title>
+     <link rel="stylesheet" href="src/output.css">
+    <style>
+        .scrollable-content {
+            width: 82.7vw;
+            min-height: 100vh; 
+            padding: 20px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 12px; 
+            border-radius: 5px; 
+            transition: background-color 0.3s; 
+        }
+        .sidebar a:hover, .sidebar a.active { 
+            background-color: rgba(255, 255, 255, 0.2); 
+        }
+        .user-icon-container:hover .user-dropdown {
+            display: block;
+        }
+        body::-webkit-scrollbar {
+            width: 13px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #c8c6c6;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #999797;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: #6c6b6b;
+        }
+
+    </style>
+</head >
+<body class="bg-gray-100 flex">
+    <div class="w-1/6 bg-red-900 text-white min-h-screen p-6 fixed left-0 top-0 sidebar">
+        <div class="flex flex-col items-center">
+            <img src="images/DAVV LOGO.png" alt="Logo" class="w-24 h-24 ">
+        </div>
+        <nav class="mt-6 space-y-4 text-lg">
+            <a href="index.html">Home</a>
+            <a href="">Student Record</a>
+            <a href="w_entry.html">Entry Record</a>
+            <a href="W_visitor.html">Visitor Record</a>
+            <a href="w_availability.html" >Check Availability</a>
+            <a href="w_allot.html">Room Allotement</a>
+            <a href="w_resolveissue.html">Resolve issue</a>
+        </nav>
+    </div>
+
+        <div class="w-[84vw] ml-[16.5%]">
+            <header class="bg-white flex justify-between items-center p-4 shadow-md fixed top-0 left-[16.8%] right-0 z-10 ">
+                <h1 class="text-2xl font-bold text-red-700">Warden</h1>
+                
+                <div class="relative user-icon-container " id="profileButton">
+                        <div class="w-11 h-11 bg-gray-300 rounded-full flex items-center justify-center">
+                             <img src="svgs/user.svg" alt="">
+                        </div>
+                        <div class="user-dropdown hidden absolute right-0 top-100% bg-white w-52 border-gray-100 z-50 rounded-md p-3 shadow-md">
+                            <div class="space-y-2">
+                                <div class="text-sm text-gray-500">Name:</div>
+                                <div class="font-medium">Rahul Revar</div>
+                                
+                                <div class="text-sm text-gray-500">Block Number:</div>
+                                <div class="font-medium">02</div>
+                            </div>
+                        </div>
+                </div>
+            </header>
+        
+   <div class="scrollable-content mt-16  bg-white p-6 ">
+             <!-- <h1 class="text-lg font-semibold mb-4">Resolve Issue</h1>
+            <section class="mt-4">
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-white shadow-md rounded-lg" id="issueTable">
+                        <thead>
+                            <tr class="bg-gray-300">
+                                <th class="p-2 border">Issue ID</th>
+                                <th class="p-2 border">Date</th>
+                                <th class="p-2 border">Enrollment No.</th>
+                                <th class="p-2 border">Issue Description</th>
+                                <th class="p-2 border">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="issueTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+            <button id="saveButton" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Save Changes</button>-->
+            
+            
+            <h1 class="text-2xl font-bold mb-4">Warden Resolve Issue</h1>
+            <div class="w-full max-w-6xl bg-white p-4 shadow-lg rounded-lg">
+                <table class="w-full border-collapse" id="resolveTable">
+                    <thead>
+                        <tr class="bg-gray-300">
+                            <th class="p-2 border">Issue ID</th>
+                            <th class="p-2 border">Student Name</th>
+                            <th class="p-2 border">Block</th>
+                            <th class="p-2 border">Room</th>
+                            <th class="p-2 border">Issue</th>
+                            <th class="p-2 border">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resolveBody">
+                        <!-- Rows dynamically inserted here -->
+                    </tbody>
+                </table>
+                <div class="flex justify-between mt-4">
+                    <button id="saveButton" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Changes</button>
+                </div>
+            </div>
+        </div> 
+        <footer class="bg-[#9B211C] h-24 p-4 flex justify-between text-white items-center ">
+            <div>
+                <p>For hostel-related inquiry: +91 981062270</p>
+                <p>&copy; 2024 IET DAVV. All Rights Reserved. Managed by IET-DAVV web team. Contact: webmaster@ietdavv.edu.in</p>
+            </div>
+            <div class="flex ">
+                <img class="h-8 w-8 m-1 bg-white p-1 rounded-full" src="svgs/facebook.svg" alt="facebook">
+                <img class="h-8 w-8 m-1 bg-white p-1 rounded-full" src="svgs/twitter.svg" alt="twitter">
+                <img class="h-8 w-8 m-1 bg-white p-1 rounded-full" src="svgs/youtube.svg" alt="youtube">
+                <img class="h-8 w-8 m-1 bg-white p-1 rounded-full" src="svgs/linkedin.svg" alt="linkedin">
+            </div>
+        </footer>
+        <!-- <script>
+            document.addEventListener("DOMContentLoaded", function () {
+            const issues = [
+                { id: "IS101", date: "2025-03-26", enrollment: "ENR001", description: "Leaking faucet in room A101" },
+                { id: "IS102", date: "2025-03-26", enrollment: "ENR002", description: "WiFi not working in Block B" }
+            ];
+            
+            const tableBody = document.getElementById("issueTableBody");
+            issues.forEach(issue => {
+                const row = `<tr class="border">
+                    <td class="p-2 border">${issue.id}</td>
+                    <td class="p-2 border">${issue.date}</td>
+                    <td class="p-2 border">${issue.enrollment}</td>
+                    <td class="p-2 border">${issue.description}</td>
+                    <td class="p-2 border">
+                        <select class="p-1 border" data-id="${issue.id}">
+                            <option value="Pending">Pending</option>
+                            <option value="Resolved">Resolved</option>
+                        </select>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            document.getElementById("saveButton").addEventListener("click", function () {
+                let issueData = [];
+                document.querySelectorAll("#issueTableBody tr").forEach(row => {
+                    let selectElem = row.querySelector("select");
+                    issueData.push({
+                        id: selectElem.dataset.id,
+                        status: selectElem.value
+                    });
+                });
+                fetch("/ResolveIssueServlet", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(issueData)
+                }).then(res => res.json()).then(data => alert("Data Saved Successfully!"));
+            });
+        });
+        </script> -->
+        <script>
+            let issues = [
+                { id: "I001", studentName: "John Doe", block: "A", room: "101", issue: "Leakage", status: "Pending" },
+                { id: "I002", studentName: "Jane Smith", block: "B", room: "202", issue: "Broken AC", status: "Pending" }
+            ];
+           
+            const resolveBody = document.getElementById("resolveBody");
+   
+            function renderTable() {
+                resolveBody.innerHTML = "";
+                issues.forEach((issue, index) => {
+                    const row = document.createElement("tr");
+                    row.className = "border hover:bg-gray-200 cursor-pointer";
+                    row.innerHTML = `
+                        <td class="p-2 border">${issue.id}</td>
+                        <td class="p-2 border">${issue.studentName}</td>
+                        <td class="p-2 border">${issue.block}</td>
+                        <td class="p-2 border">${issue.room}</td>
+                        <td class="p-2 border">${issue.issue}</td>
+                        <td class="p-2 border"><select class="status-select p-1 border w-full" data-index="${index}" ${issue.status !== 'Pending' ? 'disabled' : ''}>
+                            <option value="Pending" ${issue.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Resolved" ${issue.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+                        </select></td>
+                    `;
+                    resolveBody.appendChild(row);
+                });
+            }
+   
+            document.getElementById("saveButton").addEventListener("click", function () {
+                document.querySelectorAll(".resolution-input, .status-select").forEach(input => {
+                    let index = input.dataset.index;
+                    if (input.classList.contains("resolution-input")) {
+                        issues[index].resolution = input.value;
+                    } else if (input.classList.contains("status-select")) {
+                        issues[index].status = input.value;
+                    }
+                });
+                renderTable();
+                alert("Changes saved! Fields are now locked.");
+            });
+   
+            renderTable();
+        </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
